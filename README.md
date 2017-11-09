@@ -9,8 +9,8 @@ For more options run,
 ```-d : Downscale ratio, is set to 1.25 by default```
 
 
-![Pedestrian](.readme_images/before_nms1.jpg?raw=true "Sample Results")
-![Pedestrian](.readme_images/after_nms1.jpg?raw=true "Sample Results")
+![Pedestrian](.readme_images/before_nms1.png?raw=true "Sample Results")
+![Pedestrian](.readme_images/after_nms1.png?raw=true "Sample Results")
 
-![Pedestrian](.readme_images/before_nms2.jpg?raw=true "Sample Results")
-![Pedestrian](.readme_images/after_nms2.jpg?raw=true "Sample Results")
+![Pedestrian](.readme_images/before_nms2.png?raw=true "Sample Results")
+![Pedestrian](.readme_images/after_nms2.png?raw=true "Sample Results")
