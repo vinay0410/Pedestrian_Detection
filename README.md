@@ -3,10 +3,14 @@
 To test on images, simply run,
 ``` python detectmulti.py -i <path to image> ```
 
+For example,
+``` python detectmulti.py -i sample_images/pedestrian.jpg ```
+
+
 For more options run,
 ``` python detectmulti.py -h ```
 
-```-d : Downscale ratio, is set to 1.25 by default```
+Following are some examples,
 
 
 ![Pedestrian](.readme_images/before_nms1.png?raw=true "Sample Results")
