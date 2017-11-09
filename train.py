@@ -172,7 +172,7 @@ sys.stdout.write("\n")
 X_final = np.concatenate((X, hard_negatives))
 Y_final = np.concatenate((Y, hard_negative_labels))
 
-print "Final Samples: " str(len(X_final))
+print "Final Samples: " + str(len(X_final))
 print "Retraining the classifier with final data"
 
 clf.fit(X_final, Y_final)

@@ -16,8 +16,9 @@ def appendRects(i, j, conf, c, rects):
 parser = argparse.ArgumentParser(description='To read image name')
 
 parser.add_argument('-i', "--image", help="Path to the test image", required=True)
-parser.add_argument('-d','--downscale', help="Downscale ratio", default=1.25, type=int)
+parser.add_argument('-d','--downscale', help="Downscale ratio", default=1.25, type=float)
 parser.add_argument('-v', '--visualize', help="Visualize the sliding window", action="store_true")
+parser.add_argument('-w', '--winstride', help="Pixels to move in one step, in any direction", default=8, type=int)
 args = vars(parser.parse_args())
 
 
@@ -34,7 +35,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 scaleFactor = args["downscale"]
 inverse = 1.0/scaleFactor
-winStride = (10, 10)
+winStride = (args["winstride"], args["winstride"])
 winSize = (128, 64)
 
 rects = []
@@ -64,7 +65,7 @@ while (h >= 128 and w >= 64):
                 visual = gray.copy()
                 cv2.rectangle(visual, (j, i), (j+winSize[1], i+winSize[0]), (0, 0, 255), 2)
                 cv2.imshow("visual.jpg", visual)
-                cv2.waitKey(1)
+                cv2.waitKey(0)
 
             if int(result[0]) == 1:
                 print (result, i, j)
@@ -82,7 +83,11 @@ while (h >= 128 and w >= 64):
 
 print rects
 
-nms_rects = nms(rects, 0.3)
+nms_rects_01 = nms(rects, 0.1)
+nms_rects_02 = nms(rects, 0.2)
+nms_rects_03 = nms(rects, 0.3)
+nms_rects_04 = nms(rects, 0.4)
+nms_rects_05 = nms(rects, 0.5)
 
 for (a, b, conf, c, d) in rects:
     cv2.rectangle(orig, (a, b), (a+c, b+d), (0, 255, 0), 2)
@@ -92,7 +97,31 @@ cv2.waitKey(0)
 
 
 
-for (a, b, conf, c, d) in nms_rects:
+for (a, b, conf, c, d) in nms_rects_01:
+    cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
+
+cv2.imshow("After NMS", img)
+cv2.waitKey(0)
+
+for (a, b, conf, c, d) in nms_rects_02:
+    cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
+
+cv2.imshow("After NMS", img)
+cv2.waitKey(0)
+
+for (a, b, conf, c, d) in nms_rects_03:
+    cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
+
+cv2.imshow("After NMS", img)
+cv2.waitKey(0)
+
+for (a, b, conf, c, d) in nms_rects_04:
+    cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
+
+cv2.imshow("After NMS", img)
+cv2.waitKey(0)
+
+for (a, b, conf, c, d) in nms_rects_05:
     cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
 
 cv2.imshow("After NMS", img)

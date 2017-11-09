@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.externals import joblib
 from skimage.feature import hog
 
-clf = joblib.load('person_final.pkl')
+clf = joblib.load('person_hard.pkl')
 pos_img_dir = "test/pos/"
 neg_img_dir = "test/neg/"
 
