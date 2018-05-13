@@ -23,7 +23,7 @@ args = vars(parser.parse_args())
 
 
 
-clf = joblib.load("person_hard.pkl")
+clf = joblib.load("person_final.pkl")
 
 
 orig = cv2.imread(args["image"])
@@ -64,12 +64,12 @@ while (h >= 128 and w >= 64):
             if args["visualize"]:
                 visual = gray.copy()
                 cv2.rectangle(visual, (j, i), (j+winSize[1], i+winSize[0]), (0, 0, 255), 2)
-                cv2.imshow("visual.jpg", visual)
-                cv2.waitKey(0)
+                cv2.imshow("visual", visual)
+                cv2.waitKey(1)
 
             if int(result[0]) == 1:
                 print (result, i, j)
-                confidence = clf.decision_function(features)
+                confidence = clf.decision_function([features])
                 appendRects(i, j, confidence, count, rects)
 
 
@@ -100,29 +100,29 @@ cv2.waitKey(0)
 for (a, b, conf, c, d) in nms_rects_01:
     cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
 
-cv2.imshow("After NMS", img)
+cv2.imshow("After NMS1", img)
 cv2.waitKey(0)
 
 for (a, b, conf, c, d) in nms_rects_02:
     cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
 
-cv2.imshow("After NMS", img)
+cv2.imshow("After NMS2", img)
 cv2.waitKey(0)
 
 for (a, b, conf, c, d) in nms_rects_03:
     cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
 
-cv2.imshow("After NMS", img)
+cv2.imshow("After NMS3", img)
 cv2.waitKey(0)
 
 for (a, b, conf, c, d) in nms_rects_04:
     cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
 
-cv2.imshow("After NMS", img)
+cv2.imshow("After NMS4", img)
 cv2.waitKey(0)
 
 for (a, b, conf, c, d) in nms_rects_05:
     cv2.rectangle(img, (a, b), (a+c, b+d), (0, 255, 0), 2)
 
-cv2.imshow("After NMS", img)
+cv2.imshow("After NMS5", img)
 cv2.waitKey(0)
