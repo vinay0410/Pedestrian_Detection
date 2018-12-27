@@ -5,9 +5,15 @@ import numpy as np
 from sklearn.externals import joblib
 from skimage.feature import hog
 import sys
+import argparse
 
-pos_img_dir = "train/pos/"
-neg_img_dir = "train/neg/"
+parser = argparse.ArgumentParser(description='Parse Training Directory')
+parser.add_argument('--pos', help='Path to directory containing Positive Images')
+parser.add_argument('--neg', help='Path to directory containing Negative images')
+
+args = parser.parse_args()
+pos_img_dir = args.pos
+neg_img_dir = args.neg
 
 
 def crop_centre(img):
@@ -17,7 +23,6 @@ def crop_centre(img):
     #print (h, w, l, t)
     crop = img[t:t+128, l:l+64]
     return crop
-
 
 def read_filenames():
 
@@ -37,21 +42,22 @@ def read_filenames():
     return f_pos, f_neg
 
 
-
 def read_images(pos_files, neg_files):
 
     X = []
     Y = []
 
     for img_file in pos_files:
-        img = cv2.imread(pos_img_dir + img_file)
+        print os.path.join(pos_img_dir, img_file)
+        img = cv2.imread(os.path.join(pos_img_dir, img_file))
+
         #filename, file_extension = os.path.splitext(mypath_pos + img_file)
         #filename = os.path.basename(filename)
-
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        cropped = crop_centre(img)
+        gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
         features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2", transform_sqrt=True)
         #joblib.dump(features, "features/pos/" + filename + ".feat")
-        X.append(features)
+        X.append(features.tolist())
         Y.append(1)
 
 
@@ -59,14 +65,16 @@ def read_images(pos_files, neg_files):
     # Loading Negative images
 
     for img_file in neg_files:
-        img = cv2.imread(neg_img_dir + img_file)
+        print os.path.join(neg_img_dir, img_file)
+        img = cv2.imread(os.path.join(neg_img_dir, img_file))
+
         #filename, file_extension = os.path.splitext(mypath_neg + img_file)
         #filename = os.path.basename(filename)
         cropped = crop_centre(img)
         gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
         features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2", transform_sqrt=True)
         #joblib.dump(features, "features/neg/" + str(filename) + ".feat")
-        X.append(features)
+        X.append(features.tolist())
         Y.append(0)
 
     return X, Y
@@ -95,7 +103,6 @@ def sliding_window(image, window_size, step_size):
 
 
 
-
 def hard_negative_mine(f_neg, winSize, winStride):
 
     hard_negatives = []
@@ -105,13 +112,13 @@ def hard_negative_mine(f_neg, winSize, winStride):
     for imgfile in f_neg:
         #filename, file_extension = os.path.splitext(neg_img_dir + imgfile)
         #filename = os.path.basename(filename)
-        img = cv2.imread(neg_img_dir + imgfile)
+        img = cv2.imread(os.path.join(neg_img_dir, imgfile))
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         for (x, y, im_window) in sliding_window(gray, winSize, winStride):
             features = hog(im_window, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2", transform_sqrt=True)
-            if (clf2.predict([features]) == 1):
-                hard_negatives.append(features)
+            if (clf.predict([features]) == 1):
+                hard_negatives.append(features.tolist())
                 hard_negative_labels.append(0)
                 #joblib.dump(features, "features/neg_mined/" + str(filename) + str(imgcount) + ".feat")
                 count = count + 1
@@ -119,7 +126,7 @@ def hard_negative_mine(f_neg, winSize, winStride):
         num = num + 1
 
         #print "Images Done: " + str(num)
-        sys.stdout.write("\r" + "Images Done: " + str((num/1218.0)*100) + "\tHard negatives: " + str(count))
+        sys.stdout.write("\r" + "Images Done: " + str((num/1218.0)*100) + " %" + "\tHard negatives: " + str(count))
 
         #print "Hard Negatives: " + str(count)
         #if (num == 10):
@@ -139,16 +146,18 @@ print "Reading Images"
 
 X, Y = read_images(pos_img_files, neg_img_files)
 
+X = np.array(X)
+Y = np.array(Y)
 
-
-# Randomize data
 
 np.random.shuffle(X)
 np.random.shuffle(Y)
 
 print "Images Read and Shuffled"
 print "Training Started"
-# Initializing classifiers
+
+print X.shape
+print Y.shape
 
 
 clf = svm.LinearSVC(C=0.01)
