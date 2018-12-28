@@ -49,6 +49,8 @@ def read_filenames():
 
 def read_images(f_pos, f_neg):
 
+    print ("Reading Images")
+
     array_pos_features = []
     array_neg_features = []
     global total_pos_samples
@@ -57,7 +59,6 @@ def read_images(f_pos, f_neg):
         img = cv2.imread(os.path.join(pos_img_dir, imgfile))
         cropped = crop_centre(img)
         gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-        print gray.shape
         features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2")
         array_pos_features.append(features.tolist())
 
@@ -67,7 +68,6 @@ def read_images(f_pos, f_neg):
         img = cv2.imread(os.path.join(neg_img_dir, imgfile))
         cropped = crop_centre(img)
         gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-        print gray.shape
         features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2")
         array_neg_features.append(features.tolist())
         total_neg_samples += 1
