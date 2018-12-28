@@ -4,10 +4,29 @@ import os
 import numpy as np
 from sklearn.externals import joblib
 from skimage.feature import hog
+import argparse
 
-clf = joblib.load('person_hard.pkl')
-pos_img_dir = "test/pos/"
-neg_img_dir = "test/neg/"
+parser = argparse.ArgumentParser(description='Parse Training Directory')
+parser.add_argument('--pos', help='Path to directory containing Positive Images')
+parser.add_argument('--neg', help='Path to directory containing Negative images')
+
+args = parser.parse_args()
+
+pos_img_dir = args.pos
+neg_img_dir = args.neg
+
+clf = joblib.load('person_final.pkl')
+
+total_pos_samples = 0
+total_neg_samples = 0
+
+def crop_centre(img):
+    h, w, d = img.shape
+    l = (w - 64)/2
+    t = (h - 128)/2
+    #print (h, w, l, t)
+    crop = img[t:t+128, l:l+64]
+    return crop
 
 
 def read_filenames():
@@ -15,12 +34,11 @@ def read_filenames():
     f_pos = []
     f_neg = []
 
-    mypath_pos = pos_img_dir
-    for (dirpath, dirnames, filenames) in os.walk(mypath_pos):
+    for (dirpath, dirnames, filenames) in os.walk(pos_img_dir):
         f_pos.extend(filenames)
         break
-    mypath_neg = neg_img_dir
-    for (dirpath, dirnames, filenames) in os.walk(mypath_neg):
+
+    for (dirpath, dirnames, filenames) in os.walk(neg_img_dir):
         f_neg.extend(filenames)
         break
 
@@ -33,20 +51,26 @@ def read_images(f_pos, f_neg):
 
     array_pos_features = []
     array_neg_features = []
-
+    global total_pos_samples
+    global total_neg_samples
     for imgfile in f_pos:
-        img = cv2.imread(mypath_pos+imgfile)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.imread(os.path.join(pos_img_dir, imgfile))
+        cropped = crop_centre(img)
+        gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+        print gray.shape
         features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2")
-        array_pos_features.append(features)
-        total = total + 1
+        array_pos_features.append(features.tolist())
+
+        total_pos_samples += 1
 
     for imgfile in f_neg:
-        img = cv2.imread(mypath_neg+imgfile)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.imread(os.path.join(neg_img_dir, imgfile))
+        cropped = crop_centre(img)
+        gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+        print gray.shape
         features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2")
-        array_neg_features.append(features)
-        total = total + 1
+        array_neg_features.append(features.tolist())
+        total_neg_samples += 1
 
     return array_pos_features, array_neg_features
 
@@ -56,8 +80,22 @@ pos_img_files, neg_img_files = read_filenames()
 
 pos_features, neg_features = read_images(pos_img_files, neg_img_files)
 
-true_positives = cv2.countNonZero(clf.predict(pos_features))
+pos_result = clf.predict(pos_features)
+neg_result = clf.predict(neg_features)
 
-false_positives = cv2.countNonZero(clf.predict(neg_features))
+true_positives = cv2.countNonZero(pos_result)
+false_negatives = pos_result.shape[0] - true_positives
 
-print ("True Negatives: " + str(total - true_positives), "False_positives: " + str(false_positives))
+false_positives = cv2.countNonZero(neg_result)
+true_negatives = neg_result.shape[0] - false_positives
+
+print ("True Positives: " + str(true_positives), "False Positives: " + str(false_positives))
+print ("True Negatives: " + str(true_negatives), "False Negatives: " + str(false_negatives))
+
+precision = float(true_positives) / (true_positives + false_positives)
+recall = float(true_positives) / (true_positives + false_negatives)
+
+f1 = 2*precision*recall / (precision + recall)
+
+print ("Precision: " + str(precision), "Recall: " + str(recall))
+print ("F1 Score: " + str(f1))
