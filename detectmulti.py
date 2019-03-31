@@ -16,7 +16,7 @@ def appendRects(i, j, conf, c, rects):
 parser = argparse.ArgumentParser(description='To read image name')
 
 parser.add_argument('-i', "--image", help="Path to the test image", required=True)
-parser.add_argument('-d','--downscale', help="Downscale ratio", default=1.2, type=float)
+parser.add_argument('-d','--downscale', help="Downscale ratio", default=1.5, type=float)
 parser.add_argument('-v', '--visualize', help="Visualize the sliding window", action="store_true")
 parser.add_argument('-w', '--winstride', help="Pixels to move in one step, in any direction", default=8, type=int)
 parser.add_argument('-n', '--nms_threshold', help="Threshold Values between 0 to 1 for NMS thresholding. Default is 0.2", default=0.2, type=float)

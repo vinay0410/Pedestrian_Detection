@@ -1,5 +1,14 @@
 # Pedestrian Detection
 
+
+## Dependencies
+
+* OpenCV
+* scikit-image ```pip install scikit-image==0.14.1```
+* scikkit-learn ```pip install scikit-learn==0.20.2```
+
+## Running Detection
+
 To test on images, simply run, `python detectmulti.py -i <path to image>`
 
 For example, `python detectmulti.py -i sample_images/pedestrian.jpg`

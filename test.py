@@ -59,7 +59,7 @@ def read_images(f_pos, f_neg):
         img = cv2.imread(os.path.join(pos_img_dir, imgfile))
         cropped = crop_centre(img)
         gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-        features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2")
+        features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2", feature_vector=True)
         array_pos_features.append(features.tolist())
 
         total_pos_samples += 1
@@ -68,7 +68,7 @@ def read_images(f_pos, f_neg):
         img = cv2.imread(os.path.join(neg_img_dir, imgfile))
         cropped = crop_centre(img)
         gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-        features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2")
+        features = hog(gray, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm="L2", feature_vector=True)
         array_neg_features.append(features.tolist())
         total_neg_samples += 1
 
