@@ -33,9 +33,9 @@ Download, Uncompress and place it in the root of this repository.
 
 Then just run:
 ```
-sudo sh fixpng.sh
+sudo sh fixpng.sh # To fix the broken png files in this dataset.
 ```
-To fix the broken png files in this dataset.
+**Note:** *The above step is necessary to fix the broken pngs in the dataset, without running this the classifer won't be correctly trained.*
 
 To train just run:
 ```
