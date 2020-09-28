@@ -1,6 +1,6 @@
 # Pedestrian Detection
 
-**Note:** The code provided may not be compatible with python3. A migration is in the pipeline.
+**Note:** The code provided may not be compatible with python3. A migration to python3 is in the pipeline.
 
 ## Dependencies
 
