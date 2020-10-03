@@ -29,7 +29,7 @@ Following are some examples,
 
 ## Training
 This code is meant for Training a Pedestrian Detector using [INRIA Person Dataset](http://pascal.inrialpes.fr/data/human/).  
-**Note:** If the above link doesn't work, then the above dataset can be downloaded from [here](https://drive.google.com/file/d/14GD_pBpBsprPiZlkmtXN_y5K72To16if/view?usp=sharing)
+**Note:** If the above link doesn't work, then the above dataset can be downloaded from [here](https://drive.google.com/file/d/14GD_pBpBsprPiZlkmtXN_y5K72To16if/view?usp=sharing).
 
 Download, Uncompress and place it in the root of this repository.
 
