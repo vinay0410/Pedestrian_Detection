@@ -45,7 +45,7 @@ h, w = gray.shape
 count = 0
 while (h >= 128 and w >= 64):
 
-    print gray.shape
+    print(gray.shape)
 
     h, w= gray.shape
     horiz = w - 64
